@@ -1,6 +1,6 @@
 from aiogram.utils import executor
 from create_bot import dp
-from handlers import admin, client
+from handlers import client#, admin
 
 async def online(_):
     print('Бот запущен.')
