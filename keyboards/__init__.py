@@ -1,2 +1,2 @@
-from keyboards.client_kb import *
-from keyboards.admin_kb import *
+from .tg_keyboards import TgKeyboards
+from .tg_inline_keyboards import TgInlineKeyboards

@@ -1,15 +1,20 @@
 from aiogram.utils import executor
-from create_bot import dp
-from handlers import client, admin, addproduct
-from data_base import sqlite_db
+from aiogram import Bot, types
 
-async def online(_):
-    print('Bot started')
-    sqlite_db.sqlStart()
 
-client.register_handlers_client(dp)
-admin.register_handlers_client(dp)
-addproduct.register_handlers_client(dp)
+from repositories import PgRepository
+from dispatcher import TgDispatcher
+from handlers import TgHandlers
+from settings import SETTINGS
+
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True, on_startup=online)
+    repository = PgRepository(SETTINGS['POSTGRES_DB'], SETTINGS['POSTGRES_USER'], SETTINGS['POSTGRES_PASSWORD'],
+                              SETTINGS['POSTGRES_HOST'], SETTINGS['POSTGRES_PORT'])
+
+    bot = Bot(token=SETTINGS['TOKEN_BOT'], parse_mode=types.ParseMode.HTML)
+    handlers = TgHandlers(repository, bot)
+    dp = TgDispatcher(bot, handlers)
+    dp.registerHandlers()
+
+    executor.start_polling(dp, skip_updates=True)
